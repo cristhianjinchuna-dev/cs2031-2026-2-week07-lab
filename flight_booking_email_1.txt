@@ -1,0 +1,5 @@
+Pasajero: Ana Torres
+Número de vuelo: AA8475
+Salida: 2027-06-01T10:00
+Llegada: 2027-06-01T14:00
+Fecha de reserva: 2026-09-25T19:36:19.735958400

@@ -1,0 +1,5 @@
+Pasajero: Beto Rios
+Número de vuelo: SO8475
+Salida: 2027-08-01T10:00
+Llegada: 2027-08-01T14:00
+Fecha de reserva: 2026-09-25T19:36:21.099138800
