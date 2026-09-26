@@ -1,0 +1,34 @@
+$kind: http-request
+url: "{{baseUrl}}/flights/create"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "flightNumber": "{{flightNumberValid}}",
+      "airline": "Fly Away Travel",
+      "departureTime": "2027-06-01T10:00:00",
+      "arrivalTime": "2027-06-01T14:00:00",
+      "availableSeats": 50
+    }
+scripts:
+  - type: beforeRequest
+    code: |-
+      const suffix = pm.collectionVariables.get('uniqueSuffix').slice(-4);
+      pm.collectionVariables.set('flightNumberValid', `AA${suffix}`);
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('[1.1] Vuelo válido responde 200/201 (sin protección — no requiere JWT)', function () {
+          pm.expect([200, 201]).to.include(pm.response.code);
+      });
+
+      pm.test('[1.1] Guardamos el id del vuelo para reservas posteriores', function () {
+          const body = pm.response.json();
+          pm.expect(body).to.have.property('id');
+          pm.collectionVariables.set('flightIdValid', body.id);
+      });
+    language: text/javascript
+order: 1000

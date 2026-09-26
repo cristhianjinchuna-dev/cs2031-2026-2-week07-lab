@@ -1,0 +1,33 @@
+$kind: http-request
+url: "{{baseUrl}}/users/register"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "firstName": "Dto",
+      "lastName": "Check",
+      "email": "{{dtoCheckEmail}}",
+      "password": "Password123"
+    }
+scripts:
+  - type: beforeRequest
+    code: pm.collectionVariables.set('dtoCheckEmail', `dtocheck.${pm.collectionVariables.get('uniqueSuffix')}@utec.edu.pe`);
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('[2.4] Registro válido responde 200/201', function () {
+          pm.expect([200, 201]).to.include(pm.response.code);
+      });
+
+      pm.test('[2.4] La respuesta SOLO incluye el id (no expone password ni otros campos crudos de la entidad)', function () {
+          const body = pm.response.json();
+          const keys = Object.keys(body);
+          pm.expect(keys).to.include('id');
+          pm.expect(body).to.not.have.property('password');
+          pm.expect(keys.length, `La respuesta trae más campos de los esperados: ${JSON.stringify(body)}`).to.eql(1);
+      });
+    language: text/javascript
+order: 4000

@@ -1,0 +1,23 @@
+$kind: http-request
+url: "{{baseUrl}}/flights/search?flightNumber={{flightNumberValid}}"
+method: GET
+headers:
+  Authorization: Bearer {{jwtToken}}
+queryParams:
+  flightNumber: "{{flightNumberValid}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('[4.2] Búsqueda parcial por número de vuelo responde 200', function () {
+          pm.response.to.have.status(200);
+      });
+
+      pm.test('[4.2] Devuelve el vuelo creado en la misión 1 dentro de los resultados', function () {
+          const body = pm.response.json();
+          const list = Array.isArray(body) ? body : body.content;
+          pm.expect(list, 'La respuesta debería ser una lista (o {content: []} si es paginada)').to.be.an('array');
+          const found = list.some(f => f.flightNumber === pm.collectionVariables.get('flightNumberValid') || f.id === pm.collectionVariables.get('flightIdValid'));
+          pm.expect(found, 'No se encontró el vuelo esperado en los resultados de búsqueda').to.be.true;
+      });
+    language: text/javascript
+order: 2000

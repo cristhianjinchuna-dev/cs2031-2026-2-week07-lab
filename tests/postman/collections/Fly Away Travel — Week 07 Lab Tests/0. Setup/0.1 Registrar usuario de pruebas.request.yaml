@@ -1,0 +1,34 @@
+$kind: http-request
+url: "{{baseUrl}}/users/register"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "firstName": "Ana",
+      "lastName": "Torres",
+      "email": "{{userEmail}}",
+      "password": "{{userPassword}}"
+    }
+scripts:
+  - type: beforeRequest
+    code: |-
+      const suffix = pm.collectionVariables.get('uniqueSuffix');
+      pm.collectionVariables.set('userEmail', `lab07.${suffix}@utec.edu.pe`);
+      pm.collectionVariables.set('userPassword', 'Password123');
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('[Setup] Registro exitoso responde 200/201', function () {
+          pm.expect([200, 201]).to.include(pm.response.code);
+      });
+
+      pm.test('[Setup] Guardamos el id del usuario para pruebas posteriores', function () {
+          const body = pm.response.json();
+          pm.expect(body).to.have.property('id');
+          pm.collectionVariables.set('userId', body.id);
+      });
+    language: text/javascript
+order: 1000

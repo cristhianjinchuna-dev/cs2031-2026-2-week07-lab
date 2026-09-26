@@ -1,0 +1,11 @@
+$kind: http-request
+url: "{{baseUrl}}/flights/search"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('[4.1] Sin Authorization header responde 401/403 (endpoint protegido)', function () {
+          pm.expect([401, 403]).to.include(pm.response.code);
+      });
+    language: text/javascript
+order: 1000

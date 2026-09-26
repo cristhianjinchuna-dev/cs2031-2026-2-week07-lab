@@ -1,0 +1,28 @@
+$kind: http-request
+url: "{{baseUrl}}/auth/login"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "email": "{{userEmail}}",
+      "password": "{{userPassword}}"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('[3.4] Login correcto responde 200', function () {
+          pm.response.to.have.status(200);
+      });
+
+      pm.test('[3.4] La respuesta tiene EXACTAMENTE el formato { token: "<jwt>" }', function () {
+          const body = pm.response.json();
+          const keys = Object.keys(body);
+          pm.expect(keys, `La respuesta trae claves distintas a 'token': ${JSON.stringify(body)}`).to.eql(['token']);
+          pm.expect(body.token).to.be.a('string').and.not.empty;
+          pm.expect(body.token.split('.').length, 'El token no parece un JWT válido (header.payload.signature)').to.eql(3);
+      });
+    language: text/javascript
+order: 4000

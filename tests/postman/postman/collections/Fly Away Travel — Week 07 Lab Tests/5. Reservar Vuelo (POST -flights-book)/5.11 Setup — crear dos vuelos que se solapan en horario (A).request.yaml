@@ -1,0 +1,29 @@
+$kind: http-request
+url: "{{baseUrl}}/flights/create"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "flightNumber": "{{flightNumberOverlapA}}",
+      "airline": "Fly Away Travel",
+      "departureTime": "2027-09-01T08:00:00",
+      "arrivalTime": "2027-09-01T12:00:00",
+      "availableSeats": 20
+    }
+scripts:
+  - type: beforeRequest
+    code: |-
+      const suffix = pm.collectionVariables.get('uniqueSuffix').slice(-4);
+      pm.collectionVariables.set('flightNumberOverlapA', `OA${suffix}`);
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('[5.11 setup] Vuelo A creado', function () {
+          pm.expect([200, 201]).to.include(pm.response.code);
+          pm.collectionVariables.set('flightIdOverlapA', pm.response.json().id);
+      });
+    language: text/javascript
+order: 11000

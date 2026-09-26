@@ -1,0 +1,22 @@
+$kind: http-request
+url: "{{baseUrl}}/users/register"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "firstName": "Ana",
+      "lastName": "Torres",
+      "email": "weakpass.{{uniqueSuffix}}@utec.edu.pe",
+      "password": "short"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('[2.3] Password < 8 chars o sin dígito responde 400', function () {
+          pm.response.to.have.status(400);
+      });
+    language: text/javascript
+order: 3000

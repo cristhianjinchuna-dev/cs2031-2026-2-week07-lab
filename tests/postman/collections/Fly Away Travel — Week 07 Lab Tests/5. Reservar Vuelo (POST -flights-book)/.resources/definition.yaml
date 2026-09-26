@@ -1,0 +1,3 @@
+$kind: collection
+name: 5. Reservar Vuelo (POST /flights/book)
+order: 6000

@@ -1,0 +1,33 @@
+$kind: http-request
+url: "{{baseUrl}}/flights/create"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "flightNumber": "{{flightNumberPast}}",
+      "airline": "Fly Away Travel",
+      "departureTime": "2020-01-01T10:00:00",
+      "arrivalTime": "2020-01-01T14:00:00",
+      "availableSeats": 10
+    }
+scripts:
+  - type: beforeRequest
+    code: |-
+      const suffix = pm.collectionVariables.get('uniqueSuffix').slice(-4);
+      pm.collectionVariables.set('flightNumberPast', `PA${suffix}`);
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('[5.9 setup] Vuelo con fecha pasada creado (o rechazado si el equipo valida esto en creación — ambos son aceptables)', function () {
+          pm.expect([200, 201, 400]).to.include(pm.response.code);
+          if ([200, 201].includes(pm.response.code)) {
+              pm.collectionVariables.set('flightIdPast', pm.response.json().id);
+          } else {
+              pm.collectionVariables.set('flightIdPast', '');
+          }
+      });
+    language: text/javascript
+order: 9000

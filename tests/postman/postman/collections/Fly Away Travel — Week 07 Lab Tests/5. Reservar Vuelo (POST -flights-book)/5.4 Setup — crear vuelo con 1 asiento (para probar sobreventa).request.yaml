@@ -1,0 +1,30 @@
+$kind: http-request
+url: "{{baseUrl}}/flights/create"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "flightNumber": "{{flightNumberSoldOut}}",
+      "airline": "Fly Away Travel",
+      "departureTime": "2027-08-01T10:00:00",
+      "arrivalTime": "2027-08-01T14:00:00",
+      "availableSeats": 1
+    }
+scripts:
+  - type: beforeRequest
+    code: |-
+      const suffix = pm.collectionVariables.get('uniqueSuffix').slice(-4);
+      pm.collectionVariables.set('flightNumberSoldOut', `SO${suffix}`);
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('[5.4 setup] Vuelo con 1 asiento creado', function () {
+          pm.expect([200, 201]).to.include(pm.response.code);
+          const body = pm.response.json();
+          pm.collectionVariables.set('flightIdSoldOut', body.id);
+      });
+    language: text/javascript
+order: 4000

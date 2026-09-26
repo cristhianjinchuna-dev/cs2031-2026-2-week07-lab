@@ -1,0 +1,27 @@
+$kind: http-request
+url: "{{baseUrl}}/users/register"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "firstName": "Beto",
+      "lastName": "Rios",
+      "email": "{{userEmail2}}",
+      "password": "Password123"
+    }
+scripts:
+  - type: beforeRequest
+    code: |-
+      const suffix = pm.collectionVariables.get('uniqueSuffix');
+      pm.collectionVariables.set('userEmail2', `lab07b.${suffix}@utec.edu.pe`);
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('[5.5 setup] Segundo usuario y login OK', function () {
+          pm.expect([200, 201]).to.include(pm.response.code);
+      });
+    language: text/javascript
+order: 5000

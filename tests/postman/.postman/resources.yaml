@@ -1,0 +1,15 @@
+# Use this workspace to collaborate
+workspace:
+  id: ""
+
+localResources:
+  collections:
+    - ../Fly-Away-Travel.postman_collection.json
+  environments:
+    - ../Fly-Away-Travel.postman_environment.json
+
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+
+cloudResources:
+  collections:
+    ../postman/collections/Fly Away Travel — Week 07 Lab Tests: 1d65c3f0-399f-4363-b11e-be00fc3e95d4

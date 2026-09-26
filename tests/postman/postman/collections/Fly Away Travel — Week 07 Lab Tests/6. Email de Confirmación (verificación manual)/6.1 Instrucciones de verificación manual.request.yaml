@@ -1,0 +1,18 @@
+$kind: http-request
+description: Este request solo existe para dejar las instrucciones de verificación manual en la pestaña 'Test Results'. Revisa el archivo flight_booking_email_${booking_id}.txt generado en el filesystem de tu proyecto al correr 5.2.
+url: "{{baseUrl}}/flight/book/{{bookingId}}"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('[6.1] Este constraint no se puede verificar por HTTP — ver instrucciones', function () {
+          console.log('Verifica manualmente en el filesystem del proyecto (raíz o carpeta configurada) que exista un archivo:');
+          console.log('  flight_booking_email_' + pm.collectionVariables.get('bookingId') + '.txt');
+          console.log('creado al ejecutar la reserva 5.2 de este runner, y que su contenido incluya:');
+          console.log('  - Nombres del pasajero');
+          console.log('  - Número de vuelo');
+          console.log('  - Fechas en formato ISO 8601 (ej: 2027-06-01T10:00:00)');
+          pm.expect(true).to.be.true;
+      });
+    language: text/javascript
+order: 1000

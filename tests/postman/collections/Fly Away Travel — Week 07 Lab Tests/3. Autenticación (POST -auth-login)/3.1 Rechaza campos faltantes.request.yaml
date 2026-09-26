@@ -1,0 +1,19 @@
+$kind: http-request
+url: "{{baseUrl}}/auth/login"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "email": "{{userEmail}}"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('[3.1] Login sin password responde 400', function () {
+          pm.response.to.have.status(400);
+      });
+    language: text/javascript
+order: 1000

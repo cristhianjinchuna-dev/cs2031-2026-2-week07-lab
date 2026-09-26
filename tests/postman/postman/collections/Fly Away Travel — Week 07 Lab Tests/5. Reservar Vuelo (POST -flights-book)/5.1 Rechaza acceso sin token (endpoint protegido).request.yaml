@@ -1,0 +1,19 @@
+$kind: http-request
+url: "{{baseUrl}}/flights/book"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "flightId": "{{flightIdValid}}"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('[5.1] Sin Authorization header responde 401/403', function () {
+          pm.expect([401, 403]).to.include(pm.response.code);
+      });
+    language: text/javascript
+order: 1000

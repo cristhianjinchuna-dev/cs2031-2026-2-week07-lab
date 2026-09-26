@@ -1,0 +1,19 @@
+$kind: http-request
+url: "{{baseUrl}}/flights/create"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "airline": "Fly Away Travel"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('[1.5] Body incompleto responde 400', function () {
+          pm.response.to.have.status(400);
+      });
+    language: text/javascript
+order: 5000

@@ -1,0 +1,21 @@
+$kind: http-request
+name: 5.14 Rechaza reserva con conflicto de horario (mismo usuario, vuelo B)
+url: "{{baseUrl}}/flights/book"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{jwtToken}}
+body:
+  type: text
+  content: |-
+    {
+      "flightId": "{{flightIdOverlapB}}"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('[5.14] Reservar vuelo B (se solapa con A ya reservado por el mismo usuario) responde 400/409', function () {
+          pm.expect([400, 409]).to.include(pm.response.code);
+      });
+    language: text/javascript
+order: 14000

@@ -1,0 +1,20 @@
+$kind: http-request
+url: "{{baseUrl}}/flights/book"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{jwtToken}}
+body:
+  type: text
+  content: |-
+    {
+      "flightId": "{{flightIdOverlapA}}"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('[5.13 setup] Reserva de vuelo A OK', function () {
+          pm.expect([200, 201]).to.include(pm.response.code);
+      });
+    language: text/javascript
+order: 13000

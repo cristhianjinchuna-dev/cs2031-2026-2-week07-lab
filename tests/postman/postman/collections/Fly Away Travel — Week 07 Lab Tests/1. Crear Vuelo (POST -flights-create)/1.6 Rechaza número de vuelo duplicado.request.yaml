@@ -1,0 +1,23 @@
+$kind: http-request
+url: "{{baseUrl}}/flights/create"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "flightNumber": "{{flightNumberValid}}",
+      "airline": "Fly Away Travel",
+      "departureTime": "2027-07-01T10:00:00",
+      "arrivalTime": "2027-07-01T14:00:00",
+      "availableSeats": 20
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('[1.6] Número de vuelo repetido responde 400/409', function () {
+          pm.expect([400, 409]).to.include(pm.response.code);
+      });
+    language: text/javascript
+order: 6000

@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{baseUrl}}/auth/login"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "email": "{{userEmail2}}",
+      "password": "Password123"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('[5.6 setup] Login segundo usuario OK', function () {
+          pm.response.to.have.status(200);
+          pm.collectionVariables.set('jwtToken2', pm.response.json().token);
+      });
+    language: text/javascript
+order: 6000

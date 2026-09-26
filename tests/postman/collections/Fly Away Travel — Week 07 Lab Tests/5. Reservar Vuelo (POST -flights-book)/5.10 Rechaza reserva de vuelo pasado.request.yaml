@@ -1,0 +1,27 @@
+$kind: http-request
+url: "{{baseUrl}}/flights/book"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{jwtToken}}
+body:
+  type: text
+  content: |-
+    {
+      "flightId": "{{flightIdPast}}"
+    }
+scripts:
+  - type: beforeRequest
+    code: |-
+      if (!pm.collectionVariables.get('flightIdPast')) {
+          console.warn('flightIdPast vacío: el vuelo con fecha pasada fue rechazado en la creación. Este request se salta.');
+          postman.setNextRequest('5.11 Setup — crear dos vuelos que se solapan en horario (A)');
+      }
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test('[5.10] Reservar un vuelo con fecha de salida pasada responde 400', function () {
+          pm.response.to.have.status(400);
+      });
+    language: text/javascript
+order: 10000

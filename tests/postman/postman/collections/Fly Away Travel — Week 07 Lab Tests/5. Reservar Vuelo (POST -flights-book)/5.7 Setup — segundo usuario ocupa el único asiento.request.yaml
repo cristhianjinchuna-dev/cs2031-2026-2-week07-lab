@@ -1,0 +1,20 @@
+$kind: http-request
+url: "{{baseUrl}}/flights/book"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{jwtToken2}}
+body:
+  type: text
+  content: |-
+    {
+      "flightId": "{{flightIdSoldOut}}"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('[5.7 setup] Reserva del único asiento disponible OK', function () {
+          pm.expect([200, 201]).to.include(pm.response.code);
+      });
+    language: text/javascript
+order: 7000

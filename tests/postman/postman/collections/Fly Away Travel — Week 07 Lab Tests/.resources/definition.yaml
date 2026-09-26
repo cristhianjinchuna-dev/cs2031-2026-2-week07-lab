@@ -1,0 +1,31 @@
+$kind: collection
+description: |-
+  Colección de pruebas automáticas para el Lab 07 (CS2031-DBP). Verifica que el API de reservas de vuelos cumple con TODOS los constraints y recompensas descritos en el README del repositorio cs2031-2026-2-week07-lab.
+
+  Cómo usarla:
+  1. Levanta tu API (por defecto se asume http://localhost:8080 — ajusta la variable `baseUrl` si usas otro puerto).
+  2. Importa esta colección y el environment `Fly-Away-Travel.postman_environment.json` en Postman.
+  3. Corre la colección completa con el Collection Runner (o Newman) EN ORDEN — varios requests dependen de datos creados por requests anteriores (usuario registrado, token JWT, vuelo creado, reserva creada).
+  4. Revisa la pestaña 'Test Results' de cada request: cada assertion indica qué constraint del README se está validando y por qué falló.
+
+  Nota sobre 'Email de Confirmación' (misión 6): no se puede verificar por HTTP porque es un archivo en el filesystem del servidor. Esa carpeta de la colección solo deja instrucciones de verificación manual.
+variables:
+  baseUrl: http://localhost:8080
+  jwtToken: ""
+  userEmail: ""
+  userPassword: ""
+  userId: ""
+  flightIdValid: ""
+  flightIdSoldOut: ""
+  flightIdPast: ""
+  flightIdOverlapA: ""
+  flightIdOverlapB: ""
+  bookingId: ""
+  uniqueSuffix: ""
+scripts:
+  - type: http:beforeRequest
+    code: |-
+      if (!pm.collectionVariables.get('uniqueSuffix')) {
+          pm.collectionVariables.set('uniqueSuffix', Date.now().toString());
+      }
+    language: text/javascript

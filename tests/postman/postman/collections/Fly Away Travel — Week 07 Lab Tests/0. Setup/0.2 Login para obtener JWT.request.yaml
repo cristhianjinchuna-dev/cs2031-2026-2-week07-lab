@@ -1,0 +1,27 @@
+$kind: http-request
+url: "{{baseUrl}}/auth/login"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "email": "{{userEmail}}",
+      "password": "{{userPassword}}"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('[Setup] Login responde 200', function () {
+          pm.response.to.have.status(200);
+      });
+
+      pm.test('[Setup] Guardamos el token JWT para requests protegidos', function () {
+          const body = pm.response.json();
+          pm.expect(body).to.have.property('token');
+          pm.expect(body.token).to.be.a('string').and.not.empty;
+          pm.collectionVariables.set('jwtToken', body.token);
+      });
+    language: text/javascript
+order: 2000

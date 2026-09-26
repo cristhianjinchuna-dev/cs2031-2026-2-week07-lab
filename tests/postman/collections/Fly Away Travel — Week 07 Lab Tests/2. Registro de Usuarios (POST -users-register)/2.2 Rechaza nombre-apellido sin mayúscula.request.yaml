@@ -1,0 +1,23 @@
+$kind: http-request
+name: 2.2 Rechaza nombre/apellido sin mayúscula
+url: "{{baseUrl}}/users/register"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "firstName": "ana",
+      "lastName": "torres",
+      "email": "lowercase.{{uniqueSuffix}}@utec.edu.pe",
+      "password": "Password123"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('[2.2] Nombre/apellido todo en minúsculas responde 400', function () {
+          pm.response.to.have.status(400);
+      });
+    language: text/javascript
+order: 2000

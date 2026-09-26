@@ -1,0 +1,19 @@
+$kind: http-request
+name: 5.3 GET /flight/book/{id} devuelve la reserva creada
+url: "{{baseUrl}}/flight/book/{{bookingId}}"
+method: GET
+headers:
+  Authorization: Bearer {{jwtToken}}
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('[5.3] Consultar reserva por id responde 200', function () {
+          pm.response.to.have.status(200);
+      });
+
+      pm.test('[5.3] La reserva devuelta corresponde al id solicitado', function () {
+          const body = pm.response.json();
+          pm.expect(String(body.id)).to.eql(String(pm.collectionVariables.get('bookingId')));
+      });
+    language: text/javascript
+order: 3000

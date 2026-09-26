@@ -1,0 +1,20 @@
+$kind: http-request
+url: "{{baseUrl}}/flights/book"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{jwtToken}}
+body:
+  type: text
+  content: |-
+    {
+      "flightId": "{{flightIdSoldOut}}"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('[5.8] Reservar un vuelo sin asientos disponibles responde 400/409', function () {
+          pm.expect([400, 409]).to.include(pm.response.code);
+      });
+    language: text/javascript
+order: 8000

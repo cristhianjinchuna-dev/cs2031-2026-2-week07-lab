@@ -1,0 +1,4 @@
+name: Fly Away Travel - Local
+values:
+  - key: baseUrl
+    value: 'http://localhost:8080'

@@ -1,0 +1,3 @@
+$kind: collection
+name: 1. Crear Vuelo (POST /flights/create)
+order: 2000

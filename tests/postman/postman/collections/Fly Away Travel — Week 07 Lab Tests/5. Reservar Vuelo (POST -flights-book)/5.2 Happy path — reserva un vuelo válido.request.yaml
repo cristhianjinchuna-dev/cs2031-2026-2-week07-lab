@@ -1,0 +1,28 @@
+$kind: http-request
+url: "{{baseUrl}}/flights/book"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{jwtToken}}
+body:
+  type: text
+  content: |-
+    {
+      "flightId": "{{flightIdValid}}"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('[5.2] Reserva válida responde 200/201', function () {
+          pm.expect([200, 201]).to.include(pm.response.code);
+      });
+
+      pm.test('[5.2] La respuesta auto-calcula customerId, nombres y fecha de reserva (no se piden como input)', function () {
+          const body = pm.response.json();
+          pm.expect(body).to.have.property('id');
+          pm.collectionVariables.set('bookingId', body.id);
+          const bodyStr = JSON.stringify(body).toLowerCase();
+          pm.expect(bodyStr).to.satisfy(s => s.includes('customer') || s.includes('user'), 'La respuesta debería incluir referencia al cliente que reservó');
+      });
+    language: text/javascript
+order: 2000
